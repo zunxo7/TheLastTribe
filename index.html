@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLT - The Last Tribe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+
+    <!-- Background Video Layer -->
+    <div class="video-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="assets/Animated Background.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Main Content Layer (Hidden initially behind foliage, but visible when foliage clears) -->
+    <!-- Top Navigation Bar -->
+    <header class="navbar" id="navbar">
+        <div class="navbar-container">
+            <div class="nav-logo">
+                <img src="assets/Logo.png" alt="The Last Tribe" class="logo-small">
+            </div>
+            <div class="mobile-menu-toggle" id="mobile-toggle">
+                <i class="ph ph-list"></i>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <ul>
+                    <li><a href="#" class="nav-link" data-target="home">HOME</a></li>
+                    <li><a href="#" class="nav-link" data-target="menu-section">MENU</a></li>
+                    <li><a href="#" class="nav-link" data-target="gallery-section">GALLERY</a></li>
+                    <li><a href="#" class="nav-link" data-target="story-section">STORY</a></li>
+                    <li><a href="#" class="nav-link" data-target="location-section">LOCATION</a></li>
+                    <li><a href="#" class="nav-link" data-target="contact-section">CONTACT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <h1 class="hero-tagline" id="hero-tagline">ANCESTRAL FLAVORS REBORN</h1>
+            <p class="hero-description" id="hero-description">Traditional Afghani Cuisine with a Modern Touch</p>
+            <a href="#gallery-section" class="view-gallery-btn">View Gallery</a>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Years of Heritage</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Signature Dishes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Happy Guests</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Foliage Overlay Layer -->
+    <div id="foliage-overlay" class="foliage-overlay">
+        <div class="explore-icon">
+            <i class="ph ph-hand-pointing"></i>
+        </div>
+    </div>
+
+    <!-- Menu Section (Inline Ticker) -->
+    <section id="menu-section" class="menu-section">
+        <div class="menu-scroll-container">
+            <button class="nav-button prev" id="prev-btn">
+                <i class="ph ph-caret-left"></i>
+            </button>
+            <button class="nav-button next" id="next-btn">
+                <i class="ph ph-caret-right"></i>
+            </button>
+            <div class="menu-track-wrapper">
+                <div class="menu-track" id="menu-track">
+                    <!-- Data populated from menu.txt -->
+
+                    <!-- Card 1: Barbecue -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/BBQ.webp" alt="Barbecue" class="section-icon">
+                            <h3>BARBECUE</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-header-row">
+                                <span>ITEM</span><span>HALF</span><span>FULL</span>
+                            </div>
+                            <div class="menu-item"><span>Lamb Namkeen Tikka</span><span class="price">2,795</span><span
+                                    class="price">4,495</span></div>
+                            <div class="menu-item"><span>Mutton Seekh Kabab</span><span class="price empty"></span><span
+                                    class="price">2,595</span></div>
+                            <div class="menu-item"><span>Afghani Beef Kabab</span><span class="price empty"></span><span
+                                    class="price">2,195</span></div>
+                            <div class="menu-item"><span>Afghani Beef Tikka</span><span class="price empty"></span><span
+                                    class="price">2,495</span></div>
+                            <div class="menu-item"><span>Beef Seekh Kabab</span><span class="price empty"></span><span
+                                    class="price">1,995</span></div>
+                            <div class="menu-item"><span>Beef Bihari Boti</span><span class="price empty"></span><span
+                                    class="price">2,195</span></div>
+                            <div class="menu-item"><span>Chicken Malai Boti</span><span class="price empty"></span><span
+                                    class="price">1,895</span></div>
+                            <div class="menu-item"><span>Chicken Tikka Boti</span><span class="price empty"></span><span
+                                    class="price">1,995</span></div>
+                            <div class="menu-item"><span>Chicken Sheesh Tawook</span><span
+                                    class="price empty"></span><span class="price">1,975</span></div>
+                            <div class="menu-item"><span>Chicken Kasturi Boti</span><span
+                                    class="price empty"></span><span class="price">1,995</span></div>
+                            <div class="menu-item"><span>Chicken Tikka</span><span class="price empty"></span><span
+                                    class="price">1,495</span></div>
+                            <div class="menu-item"><span>Chicken Seekh Kabab</span><span
+                                    class="price empty"></span><span class="price">1,995</span></div>
+                            <div class="menu-item"><span>Chicken Namkeen Tikka</span><span
+                                    class="price empty"></span><span class="price">2,495</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 2: Chapli Kabab -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Chapli Kabab.webp" alt="Chapli Kabab" class="section-icon">
+                            <h3>CHAPLI KABAB</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-header-row">
+                                <span>ITEM</span><span>HALF</span><span>FULL</span>
+                            </div>
+                            <div class="menu-item"><span>Mutton Chappal Kabab</span><span
+                                    class="price">1,895</span><span class="price">2,975</span></div>
+                            <div class="menu-item"><span>Beef Chappal Kabab</span><span class="price">1,495</span><span
+                                    class="price">2,395</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 3: Chicken -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Chicken.webp" alt="Chicken" class="section-icon">
+                            <h3>CHICKEN</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-header-row">
+                                <span>ITEM</span><span>HALF</span><span>FULL</span>
+                            </div>
+                            <div class="menu-item"><span>Chicken Karhai Shinwari</span><span
+                                    class="price">1,395</span><span class="price">2,495</span></div>
+                            <div class="menu-item"><span>Chicken Karhai Sulemani</span><span
+                                    class="price empty"></span><span class="price">2,475</span></div>
+                            <div class="menu-item"><span>Desi Chicken Karhai (with Butter)</span><span
+                                    class="price">2,795</span><span class="price">4,995</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 4: Pulao -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Pulao.webp" alt="Pulao" class="section-icon">
+                            <h3>PULAO</h3>
+                        </div>
+                        <div class="card-content">
+                            <!-- Pulao mostly single price, using single-price class or hiding half column -->
+                            <div class="menu-item single-price"><span>Kabuli Pulao with Lamb</span><span
+                                    class="price">2,895</span></div>
+                            <div class="menu-item single-price"><span>Kabuli Pulao with Mutton</span><span
+                                    class="price">2,895</span></div>
+                            <div class="menu-item single-price"><span>Mutton Yakhni Pulao</span><span
+                                    class="price">2,795</span></div>
+                            <div class="menu-item single-price"><span>Kabuli Pulao with Beef</span><span
+                                    class="price">1,999</span></div>
+                            <div class="menu-item single-price"><span>Plain Kabuli Pulao</span><span
+                                    class="price">995</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 5: Lamb -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Lamb.webp" alt="Lamb" class="section-icon">
+                            <h3>LAMB</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-header-row">
+                                <span>ITEM</span><span>HALF</span><span>FULL</span>
+                            </div>
+                            <div class="menu-item"><span>Shinwari Karhai</span><span class="price">2,795</span><span
+                                    class="price">4,495</span></div>
+                            <div class="menu-item"><span>Sulemani Karhai</span><span class="price">2,795</span><span
+                                    class="price">4,495</span></div>
+                            <div class="menu-item"><span>Lamb Qeema</span><span class="price">2,795</span><span
+                                    class="price">4,495</span></div>
+                            <div class="menu-item"><span>Masala Rosh</span><span class="price">2,995</span><span
+                                    class="price">4,995</span></div>
+                            <div class="menu-item"><span>Special Masala Rosh (with bone marrow)</span><span
+                                    class="price">3,195</span><span class="price">5,495</span></div>
+                            <div class="menu-item"><span>Namkeen Rosh</span><span class="price">2,795</span><span
+                                    class="price">4,495</span></div>
+                            <div class="menu-item"><span>Ribs with Kabuli Pulao (Per Kg)</span><span
+                                    class="price empty"></span><span class="price">5,495</span></div>
+                            <div class="menu-item"><span>Raan with Kabuli Pulao (Per Kg)</span><span
+                                    class="price empty"></span><span class="price">5,495</span></div>
+                            <div class="menu-item"><span>Afghani Karhai Lamb (golden butter)</span><span
+                                    class="price empty"></span><span class="price">4,995</span></div>
+                            <div class="menu-item"><span>Lamb White Rosh</span><span class="price">2,995</span><span
+                                    class="price">4,995</span></div>
+                            <div class="menu-item"><span>Lamb Shank Karhai</span><span class="price empty"></span><span
+                                    class="price">5,995</span></div>
+                            <div class="menu-item single-price"><span>Salam Dumba Dumpukht (Per Kg)</span><span
+                                    class="price">4,295</span></div>
+                            <div class="menu-item single-price"><span>Salam Dumba Dumpukht (3Kg min)</span><span
+                                    class="price">4,495</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 6: Mutton -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Mutton.webp" alt="Mutton" class="section-icon">
+                            <h3>MUTTON</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-header-row">
+                                <span>ITEM</span><span>HALF</span><span>FULL</span>
+                            </div>
+                            <div class="menu-item"><span>Wrata</span><span class="price">2,795</span><span
+                                    class="price">4,995</span></div>
+                            <div class="menu-item"><span>Shinwari Karhai</span><span class="price">2,995</span><span
+                                    class="price">4,995</span></div>
+                            <div class="menu-item"><span>Ribs with Kabuli Pulao (Per Kg)</span><span
+                                    class="price empty"></span><span class="price">5,495</span></div>
+                            <div class="menu-item"><span>Raan with Kabuli Pulao (Per Kg)</span><span
+                                    class="price empty"></span><span class="price">5,495</span></div>
+                            <div class="menu-item"><span>Mutton Afghani Karhai</span><span
+                                    class="price empty"></span><span class="price">5,495</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 7: Platter -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Platter.webp" alt="Platter" class="section-icon">
+                            <h3>PLATTER</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-item single-price"><span>Half Platter (Serves 3–4)</span><span
+                                    class="price">10,999</span></div>
+                            <div class="menu-item single-price"><span>Full Platter (Serves 7–8)</span><span
+                                    class="price">18,999</span></div>
+                        </div>
+                    </article>
+
+                    <!-- Card 8: Sides -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Sides.webp" alt="Sides" class="section-icon">
+                            <h3>SIDES</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-item single-price"><span>Green Chatni</span><span class="price">395</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Tomato Chatni</span><span class="price">395</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Zeera Raita</span><span class="price">345</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Mint Raita</span><span class="price">345</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Fresh Salad</span><span class="price">495</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Imli Chatni</span><span class="price">345</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 9: Beverages -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Beverages.webp" alt="Beverages" class="section-icon">
+                            <h3>BEVERAGES</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-item single-price"><span>Peshawari Kehwa (4 Persons)</span><span
+                                    class="price">199</span></div>
+                            <div class="menu-item single-price"><span>Chai</span><span class="price">249</span></div>
+                            <div class="menu-item single-price"><span>Soft Drinks</span><span class="price">245</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Fresh Juices</span><span class="price">475</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Margarita</span><span class="price">495</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Mojito</span><span class="price">695</span></div>
+                            <div class="menu-item single-price"><span>Lemonade</span><span class="price">495</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Pina Colada</span><span class="price">799</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Water Small</span><span class="price">125</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Water Large</span><span class="price">295</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Fresh Lime</span><span class="price">299</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 10: Meetha -->
+                    <article class="menu-card">
+                        <div class="card-header">
+                            <img src="assets/Meetha.webp" alt="Meetha" class="section-icon">
+                            <h3>MEETHA</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="menu-item single-price"><span>Gur Wale Chawal</span><span
+                                    class="price">1,495</span>
+                            </div>
+                            <div class="menu-item single-price"><span>Gulab Jamun with Rabri</span><span
+                                    class="price">945</span></div>
+                            <div class="menu-item single-price"><span>Special Desi Halwa</span><span
+                                    class="price">945</span></div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery-section" class="gallery-section">
+        <h2 class="gallery-title">Gallery</h2>
+        <div class="gallery-content">
+            <p>Gallery content coming soon...</p>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story-section" class="story-section">
+        <h2 class="story-title">Our Story</h2>
+        <div class="story-content">
+            <p>Story content coming soon...</p>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section id="location-section" class="location-section">
+        <h2 class="location-title">Location</h2>
+        <div class="location-content">
+            <p>Location content coming soon...</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-section" class="contact-section">
+        <h2 class="contact-title">Contact Us</h2>
+        <div class="contact-content">
+            <p>Contact content coming soon...</p>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
