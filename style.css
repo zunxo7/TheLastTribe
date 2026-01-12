@@ -21,6 +21,11 @@ html {
     /* Hide scrollbar defaults */
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* Disable text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 body {
