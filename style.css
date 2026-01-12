@@ -26,6 +26,9 @@ html {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    /* Remove tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 body {
@@ -33,6 +36,12 @@ body {
     /* Changed from 200vh to avoid forced scroll if not needed, though content likely pushes it */
     overflow-x: hidden;
     /* Handle overflow here */
+}
+
+/* Remove tap highlight on all interactive elements */
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 /* Hide scrollbar for Chrome/Safari on main page */
