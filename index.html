@@ -332,9 +332,17 @@
 
     <!-- Gallery Section -->
     <section id="gallery-section" class="gallery-section">
-        <h2 class="gallery-title">Gallery</h2>
-        <div class="gallery-content">
-            <p>Gallery content coming soon...</p>
+        <h2 class="gallery-title">
+            <div id="gallery-line-1">LETS DISCOVER</div>
+            <div id="gallery-line-2">TOGETHER</div>
+        </h2>
+        <div class="gallery-content centered-graphics">
+            <div class="binoculars-container">
+                <img src="assets/Binoculars.webp" alt="View Gallery" class="binoculars-img">
+                <div class="icon-overlay">
+                    <i class="ph ph-hand-pointing"></i>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -362,9 +370,33 @@
         </div>
     </section>
 
+    <!-- Gallery Overlay - Art Gallery -->
+    <div id="gallery-overlay" class="hidden">
+        <button id="gallery-close" class="gallery-close-btn"><i class="ph ph-x"></i></button>
+
+        <!-- Art Gallery Grid View (PC) -->
+        <div id="art-gallery-grid" class="art-gallery-grid">
+            <div class="art-gallery-title">OUR GALLERY</div>
+            <div id="frames-container" class="frames-container">
+                <!-- JS injects framed images here -->
+            </div>
+        </div>
+
+        <!-- Expanded View -->
+        <div id="gallery-expanded" class="gallery-expanded hidden">
+            <div class="expanded-frame-container">
+                <img class="expanded-frame" src="assets/Frame.webp" alt="Frame">
+                <img id="expanded-img" class="expanded-content-img" src="" alt="Gallery Image">
+            </div>
+            <button id="gallery-prev" class="gallery-nav-btn prev"><i class="ph ph-caret-left"></i></button>
+            <button id="gallery-next" class="gallery-nav-btn next"><i class="ph ph-caret-right"></i></button>
+            <div class="swipe-hint">Swipe to navigate</div>
+            <button id="back-to-gallery" class="back-to-gallery-btn">Back to Gallery</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 
 
 </html>
-

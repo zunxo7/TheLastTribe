@@ -202,70 +202,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Initialize: Move last card to front so the logical "first" card (A) is in the middle slot [Last, A, B]
-        if (menuTrack.children.length > 0) {
+        if (menuTrack && menuTrack.children.length > 0) {
             menuTrack.prepend(menuTrack.lastElementChild);
             updateSpotlight(1);
         }
 
-        // --- NEXT BUTTON (Move Start -> End) ---
-        nextBtn.addEventListener('click', () => {
-            if (isAnimating) return;
-            isAnimating = true;
+        if (nextBtn && menuTrack) {
+            // --- NEXT BUTTON (Move Start -> End) ---
+            nextBtn.addEventListener('click', () => {
+                if (isAnimating) return;
+                isAnimating = true;
 
-            // 1. Immediate Spotlight: Light up the card that WILL be in the middle (Index 2)
-            // Current: [0, 1, 2] -> Next View: [1, 2, 3] -> Center is 2
-            updateSpotlight(2);
+                // 1. Immediate Spotlight: Light up the card that WILL be in the middle (Index 2)
+                // Current: [0, 1, 2] -> Next View: [1, 2, 3] -> Center is 2
+                updateSpotlight(2);
 
-            // 2. Animate track to the left
-            menuTrack.style.transition = 'transform 0.4s ease';
-            menuTrack.style.transform = `translateX(-${moveAmount}px)`;
+                // 2. Animate track to the left
+                menuTrack.style.transition = 'transform 0.4s ease';
+                menuTrack.style.transform = `translateX(-${moveAmount}px)`;
 
-            // 3. After animation, rotate DOM and reset
-            setTimeout(() => {
+                // 3. After animation, rotate DOM and reset
+                setTimeout(() => {
+                    menuTrack.style.transition = 'none';
+                    menuTrack.appendChild(menuTrack.firstElementChild); // Move first visible to end
+                    menuTrack.style.transform = 'translateX(0)';
+
+                    // Now that we rotated, the spotlighted card (was index 2) is now index 1.
+                    // We re-affirm index 1 just to be safe and consistent.
+                    updateSpotlight(1);
+
+                    isAnimating = false;
+                }, 400); // 400ms matches CSS transition
+            });
+        }
+
+        if (prevBtn && menuTrack) {
+            // --- PREV BUTTON (Move End -> Start) ---
+            prevBtn.addEventListener('click', () => {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 1. Instantly move last card to front
                 menuTrack.style.transition = 'none';
-                menuTrack.appendChild(menuTrack.firstElementChild); // Move first visible to end
+                menuTrack.prepend(menuTrack.lastElementChild);
+
+                // 2. Immediate Spotlight: Light up the new middle card (Index 1)
+                updateSpotlight(1);
+
+                // 2. Shift track left so the new first card is off-screen (keeping view stable)
+                menuTrack.style.transform = `translateX(-${moveAmount}px)`;
+
+                // 3. Force reflow/repaint to ensure browser accepts the instant jump
+                void menuTrack.offsetWidth;
+
+                // 4. Animate back to 0
+                menuTrack.style.transition = 'transform 0.4s ease';
                 menuTrack.style.transform = 'translateX(0)';
 
-                // Now that we rotated, the spotlighted card (was index 2) is now index 1.
-                // We re-affirm index 1 just to be safe and consistent.
-                updateSpotlight(1);
-
-                isAnimating = false;
-            }, 400); // 400ms matches CSS transition
-        });
-
-        // --- PREV BUTTON (Move End -> Start) ---
-        prevBtn.addEventListener('click', () => {
-            if (isAnimating) return;
-            isAnimating = true;
-
-            // 1. Instantly move last card to front
-            menuTrack.style.transition = 'none';
-            menuTrack.prepend(menuTrack.lastElementChild);
-
-            // 2. Immediate Spotlight: Light up the new middle card (Index 1)
-            updateSpotlight(1);
-
-            // 2. Shift track left so the new first card is off-screen (keeping view stable)
-            menuTrack.style.transform = `translateX(-${moveAmount}px)`;
-
-            // 3. Force reflow/repaint to ensure browser accepts the instant jump
-            void menuTrack.offsetWidth;
-
-            // 4. Animate back to 0
-            menuTrack.style.transition = 'transform 0.4s ease';
-            menuTrack.style.transform = 'translateX(0)';
-
-            // 5. Cleanup
-            setTimeout(() => {
-                // Spotlight is already correct, but good to ensure state
-                updateSpotlight(1);
-                isAnimating = false;
-            }, 400);
-        });
+                // 5. Cleanup
+                setTimeout(() => {
+                    // Spotlight is already correct, but good to ensure state
+                    updateSpotlight(1);
+                    isAnimating = false;
+                }, 400);
+            });
+        }
 
         // Initial spotlight set
-        updateSpotlight(1);
+        if (menuTrack) updateSpotlight(1);
     }
 
     // --- Mobile Menu Card Focus Logic ---
@@ -328,8 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- INJECT CLOSE BUTTON INTO WRAPPER (Sibling to card) ---
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'mobile-menu-close-btn';
-                // Use inline SVG (White X)
-                closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffffff" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>';
+                closeBtn.innerHTML = '<i class="ph ph-x"></i>';
                 closeBtn.onclick = (ev) => {
                     ev.stopPropagation();
                     dismissMobileFocus();
@@ -355,13 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close on overlay click
-    mobileMenuOverlay.addEventListener('click', () => {
-        dismissMobileFocus();
-    });
-
-    // Close on clicking outside the card content (if we want that, though overlay handles it)
-    // Also close on hitting X if we added one (we haven't yet, but good for future)
-
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.addEventListener('click', () => {
+            dismissMobileFocus();
+        });
+    }
 
     // Scroll effects for Navbar
     const navbar = document.getElementById('navbar');
@@ -537,6 +538,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Gallery Title Animation (Separate from Gallery Section bg effect)
+        const galleryLine1 = document.getElementById('gallery-line-1');
+        const galleryLine2 = document.getElementById('gallery-line-2');
+        const binocularsContainer = document.querySelector('.binoculars-container');
+
+        if (gallerySection && galleryLine1 && galleryLine2) {
+            const windowHeight = window.innerHeight;
+            const galleryRect = gallerySection.getBoundingClientRect();
+            // Trigger when top is 70% down viewport (entering) or bottom is 20% down (leaving)
+            const isGalleryVisible = (galleryRect.top < windowHeight * 0.7) && (galleryRect.bottom > windowHeight * 0.2);
+
+            // Access state stored on element to avoid global var pollution
+            if (isGalleryVisible !== (gallerySection.dataset.isVisible === 'true')) {
+                gallerySection.dataset.isVisible = isGalleryVisible; // Store state
+
+                if (isGalleryVisible) {
+                    // Enter
+                    wrapWords(galleryLine1, "LETS DISCOVER");
+                    wrapWords(galleryLine2, "TOGETHER");
+                    animateWords(galleryLine1, 0);
+                    animateWords(galleryLine2, 400); // Slight delay for second line
+
+                    if (binocularsContainer) {
+                        binocularsContainer.classList.remove('exit');
+                        binocularsContainer.classList.add('visible');
+                    }
+                } else {
+                    // Exit
+                    exitWords(galleryLine1);
+                    exitWords(galleryLine2);
+
+                    if (binocularsContainer) {
+                        binocularsContainer.classList.remove('visible');
+                        binocularsContainer.classList.add('exit');
+                    }
+                }
+            }
+        }
+
         lastScrollTop = scrollTop;
     }
 
@@ -546,8 +586,8 @@ document.addEventListener('DOMContentLoaded', () => {
     handleScroll();
 
     // Smooth Scroll for Nav Links
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
+    const navLinksMain = document.querySelectorAll('.nav-link');
+    navLinksMain.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('data-target');
@@ -559,5 +599,230 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // --- Art Gallery Logic ---
+    const galleryOverlay = document.getElementById('gallery-overlay');
+    const galleryCloseBtn = document.getElementById('gallery-close');
+    const galleryPrevBtn = document.getElementById('gallery-prev');
+    const galleryNextBtn = document.getElementById('gallery-next');
+    const backToGalleryBtn = document.getElementById('back-to-gallery');
+    const framesContainer = document.getElementById('frames-container');
+    const galleryExpanded = document.getElementById('gallery-expanded');
+    const expandedImg = document.getElementById('expanded-img');
+
+    // Gallery Images (Filler images for now)
+    const galleryImages = [
+        'assets/BBQ.webp',
+        'assets/Chapli Kabab.webp',
+        'assets/Chicken.webp',
+        'assets/Lamb.webp',
+        'assets/Mutton.webp',
+        'assets/Platter.webp',
+        'assets/Pulao.webp',
+        'assets/Meetha.webp',
+        'assets/Sides.webp',
+        'assets/Beverages.webp'
+    ];
+
+    let currentIndex = 0;
+
+    // --- Initialization: Render Gallery Frames ---
+    function initGallery() {
+        if (!framesContainer) return;
+        framesContainer.innerHTML = '';
+
+        galleryImages.forEach((imgSrc, index) => {
+            // Create frame item
+            const frameItem = document.createElement('div');
+            frameItem.className = 'gallery-frame-item';
+            frameItem.dataset.index = index;
+
+            // Create wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'gallery-frame-wrapper';
+
+            // Frame image
+            const frameImg = document.createElement('img');
+            frameImg.className = 'frame-img';
+            frameImg.src = 'assets/Frame.webp';
+            frameImg.alt = 'Frame';
+
+            // Thumbnail image
+            const thumbnailImg = document.createElement('img');
+            thumbnailImg.className = 'thumbnail-img';
+            thumbnailImg.src = imgSrc;
+            thumbnailImg.alt = `Gallery Image ${index + 1}`;
+            thumbnailImg.loading = 'lazy';
+
+            // Assemble
+            wrapper.appendChild(thumbnailImg);
+            wrapper.appendChild(frameImg);
+            frameItem.appendChild(wrapper);
+            framesContainer.appendChild(frameItem);
+
+            // Click handler: Expand frame
+            frameItem.addEventListener('click', () => {
+                expandFrame(index);
+            });
+        });
+    }
+
+    // --- Expand Frame (Zoom to center) ---
+    function expandFrame(index) {
+        currentIndex = index;
+        if (!expandedImg || !galleryExpanded) return;
+
+        expandedImg.src = galleryImages[currentIndex];
+        galleryExpanded.classList.remove('hidden');
+    }
+
+    // --- Navigate Images (Prev/Next) ---
+    function changeImage(direction) {
+        if (!expandedImg) return;
+
+        // Add fade-out animation
+        expandedImg.style.opacity = '0';
+        expandedImg.style.transform = 'translate(-50%, -50%) scale(0.9)';
+
+        setTimeout(() => {
+            // Update image
+            if (direction === 'next') {
+                currentIndex = (currentIndex + 1) % galleryImages.length;
+            } else {
+                currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+            }
+            expandedImg.src = galleryImages[currentIndex];
+
+            // Add fade-in animation
+            setTimeout(() => {
+                expandedImg.style.opacity = '1';
+                expandedImg.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 50);
+        }, 300);
+    }
+
+    // --- Open/Close Gallery ---
+    const binocularsContainers = document.querySelectorAll('.binoculars-container');
+    binocularsContainers.forEach(container => {
+        container.addEventListener('click', () => {
+            openGallery();
+        });
+    });
+
+    function openGallery() {
+        if (!galleryOverlay) return;
+
+        galleryOverlay.classList.remove('hidden');
+        void galleryOverlay.offsetWidth; // Force reflow
+        galleryOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Scroll to top of gallery overlay
+        const artGalleryGrid = document.getElementById('art-gallery-grid');
+        if (artGalleryGrid) {
+            artGalleryGrid.scrollTop = 0;
+        }
+
+        // Ensure expanded view is hidden
+        if (galleryExpanded) {
+            galleryExpanded.classList.add('hidden');
+        }
+
+        // Fade in gallery title
+        const galleryTitle = document.querySelector('.art-gallery-title');
+        if (galleryTitle) {
+            galleryTitle.classList.remove('fade-in');
+            void galleryTitle.offsetWidth; // Force reflow
+            galleryTitle.classList.add('fade-in');
+        }
+
+        // Trigger staggered fade-in animation for frames
+        const frames = document.querySelectorAll('.gallery-frame-item');
+        frames.forEach((frame) => {
+            // Remove the class first in case gallery was opened before
+            frame.classList.remove('fade-in');
+        });
+
+        // Force reflow
+        void document.body.offsetWidth;
+
+        // Add fade-in class to trigger animation
+        frames.forEach((frame) => {
+            frame.classList.add('fade-in');
+        });
+    }
+
+    function closeGallery() {
+        if (!galleryOverlay) return;
+
+        galleryOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        setTimeout(() => {
+            galleryOverlay.classList.add('hidden');
+            if (galleryExpanded) {
+                galleryExpanded.classList.add('hidden');
+            }
+        }, 600);
+    }
+
+    function backToGalleryGrid() {
+        if (galleryExpanded) {
+            galleryExpanded.classList.add('hidden');
+        }
+    }
+
+    // --- Event Listeners ---
+    if (galleryCloseBtn) {
+        galleryCloseBtn.addEventListener('click', closeGallery);
+    }
+
+    if (galleryPrevBtn) {
+        galleryPrevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            changeImage('prev');
+        });
+    }
+
+    if (galleryNextBtn) {
+        galleryNextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            changeImage('next');
+        });
+    }
+
+    if (backToGalleryBtn) {
+        backToGalleryBtn.addEventListener('click', backToGalleryGrid);
+    }
+
+    // Swipe functionality for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    function handleSwipe() {
+        const swipeThreshold = 50; // Minimum distance for swipe
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swiped left - next image
+            changeImage('next');
+        }
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swiped right - previous image
+            changeImage('prev');
+        }
+    }
+
+    if (galleryExpanded) {
+        galleryExpanded.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        galleryExpanded.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+    }
+
+    // Initialize Gallery
+    initGallery();
 
 });
