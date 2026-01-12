@@ -312,6 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Add click icons to menu cards on mobile
+    function addClickIcons() {
+        if (window.innerWidth <= 768) {
+            menuCards.forEach(card => {
+                // Check if click icon already exists
+                if (!card.querySelector('.card-click-icon')) {
+                    const clickIcon = document.createElement('div');
+                    clickIcon.className = 'card-click-icon';
+                    clickIcon.innerHTML = '<i class="ph ph-hand-pointing"></i>';
+                    card.appendChild(clickIcon);
+                }
+            });
+        } else {
+            // Remove click icons on desktop
+            menuCards.forEach(card => {
+                const clickIcon = card.querySelector('.card-click-icon');
+                if (clickIcon) {
+                    clickIcon.remove();
+                }
+            });
+        }
+    }
+
+    // Add click icons initially
+    addClickIcons();
+
+    // Re-add icons on window resize
+    window.addEventListener('resize', addClickIcons);
+
     // Add click listeners to cards
     menuCards.forEach(card => {
         card.addEventListener('click', (e) => {
@@ -555,8 +584,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (isGalleryVisible) {
                     // Enter
-                    wrapWords(galleryLine1, "LETS DISCOVER");
-                    wrapWords(galleryLine2, "TOGETHER");
+                    wrapWords(galleryLine1, "CLICK BELOW");
+                    wrapWords(galleryLine2, "TO EXPLORE");
                     animateWords(galleryLine1, 0);
                     animateWords(galleryLine2, 400); // Slight delay for second line
 
@@ -594,7 +623,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetId) {
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    // Calculate exact position - sections are full viewport height, so use offsetTop directly
+                    let targetPosition;
+                    if (targetId === 'home') {
+                        targetPosition = 0;
+                    } else {
+                        targetPosition = targetElement.offsetTop;
+                    }
+
+                    // Scroll to exact position
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
                 }
             }
         });
@@ -709,6 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Scrollbar Compensation Helper ---
     function openGallery() {
         if (!galleryOverlay) return;
 
