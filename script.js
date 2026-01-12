@@ -268,6 +268,101 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSpotlight(1);
     }
 
+    // --- Mobile Menu Card Focus Logic ---
+    const menuCards = document.querySelectorAll('.menu-card');
+
+    // Create overlay if not exists
+    let mobileMenuOverlay = document.querySelector('.menu-overlay-mobile');
+    if (!mobileMenuOverlay) {
+        mobileMenuOverlay = document.createElement('div');
+        mobileMenuOverlay.className = 'menu-overlay-mobile';
+        document.body.appendChild(mobileMenuOverlay);
+    }
+
+    let activeModal = null;
+
+    // Function to dismiss focus
+    function dismissMobileFocus() {
+        if (activeModal) {
+            // Force reflow to ensure animation triggers freshly if needed
+            void activeModal.offsetWidth;
+
+            // Trigger exit animation
+            activeModal.classList.add('closing');
+
+            // Remove overlay active state immediately for sync fade
+            mobileMenuOverlay.classList.remove('active');
+
+            // Wait for animation to finish before removing
+            setTimeout(() => {
+                if (activeModal) {
+                    activeModal.remove();
+                    activeModal = null;
+                }
+                document.body.style.overflow = ''; // Restore scroll after fully closed
+            }, 300); // 300ms matches CSS animation duration
+        } else {
+            // Fallback if no active modal
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Add click listeners to cards
+    menuCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Only trigger on mobile
+            if (window.innerWidth <= 768) {
+                // Prevent multiple modals
+                if (activeModal) return;
+
+                // --- CREATE WRAPPER ---
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mobile-focus-wrapper';
+
+                // Create a clone for the card
+                const cardClone = card.cloneNode(true);
+                cardClone.classList.add('mobile-focus-inner'); // Replaces mobile-focus styles on the card itself
+                cardClone.removeAttribute('id');
+
+                // --- INJECT CLOSE BUTTON INTO WRAPPER (Sibling to card) ---
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'mobile-menu-close-btn';
+                // Use inline SVG (White X)
+                closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffffff" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>';
+                closeBtn.onclick = (ev) => {
+                    ev.stopPropagation();
+                    dismissMobileFocus();
+                };
+
+                // Assemble
+                wrapper.appendChild(cardClone);
+                wrapper.appendChild(closeBtn); // Appended after card, but absolute positioned
+
+                // Set active modal to the wrapper
+                activeModal = wrapper;
+
+                // Append to body to escape any parent transforms/z-indexes
+                document.body.appendChild(activeModal);
+
+                // Show overlay
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Lock background scroll
+
+                e.stopPropagation(); // Stop bubbling
+            }
+        });
+    });
+
+    // Close on overlay click
+    mobileMenuOverlay.addEventListener('click', () => {
+        dismissMobileFocus();
+    });
+
+    // Close on clicking outside the card content (if we want that, though overlay handles it)
+    // Also close on hitting X if we added one (we haven't yet, but good for future)
+
+
     // Scroll effects for Navbar
     const navbar = document.getElementById('navbar');
     let lastScrollTop = 0;
@@ -336,6 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         if (heroStats) {
                             heroStats.classList.remove('visible');
+                            heroStats.classList.add('exit');
                         }
                     }
                 } else if (isVisible && !taglinesCurrentlyVisible) {
@@ -362,6 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 viewGalleryBtn.classList.add('visible');
                             }
                             if (heroStats) {
+                                heroStats.classList.remove('exit');
                                 heroStats.classList.add('visible');
                             }
                         }, 600);

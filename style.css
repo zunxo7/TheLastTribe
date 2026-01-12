@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
+/* --- Scroll Offset Fix --- */
+/* --- Scroll Offset Fix (Global removed, specialized below) --- */
+section {
+    /* Desktop uses default or js handling, mobile needs explicit offset */
+    scroll-margin-top: 0;
+}
+
 body,
 html {
     margin: 0;
@@ -410,6 +417,10 @@ body {
     animation: fadeInStats 0.8s ease forwards;
 }
 
+.hero-stats.exit {
+    animation: fadeOutStats 0.5s ease forwards;
+}
+
 @keyframes fadeInStats {
     from {
         opacity: 0;
@@ -419,6 +430,18 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutStats {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px);
     }
 }
 
@@ -665,6 +688,11 @@ body {
         flex-direction: column;
         gap: 20px;
     }
+
+    /* Scroll Offset for Mobile Sections */
+    section {
+        scroll-margin-top: 100px;
+    }
 }
 
 /* --- Menu Section (Inline) --- */
@@ -840,19 +868,19 @@ body {
 
     .menu-card {
         flex: 0 0 auto;
-        width: 90%;
+        /* Vertical list on mobile: Use calc for dynamic consistent margins */
+        width: calc(100vw - 40px) !important;
         max-width: 400px;
         height: 70vh !important;
         border-radius: 5px;
         padding: 30px 30px;
         transform: none !important;
-        /* filter: brightness(1) !important;  REMOVED - now handled on ::before */
-        /* background-size: 100% 100% !important; REMOVED - now handled on ::before */
+        /* Center in the column */
+        margin: 0 auto !important;
         background-repeat: no-repeat;
         background-position: center;
         display: flex !important;
         flex-direction: column;
-        margin: 0;
         box-sizing: border-box;
         overflow: visible !important;
         /* Ensure background fits explicitly if needed, but we use ::before now */
@@ -1095,6 +1123,135 @@ body {
 
     .menu-header-row span:first-child {
         text-align: left !important;
+    }
+
+    /* --- Mobile Menu Focus Overlay --- */
+    .menu-overlay-mobile {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        z-index: 2000;
+        /* Below focused card (2001) but above everything else */
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .menu-overlay-mobile.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Focused Card State */
+    /* Wrapper handles positioning and visibility of close button */
+    /* Wrapper handles positioning and visibility of close button */
+    .mobile-focus-wrapper {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100vw - 40px);
+        max-width: 400px;
+        /* Use flex to manage inner height correctly */
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        max-height: 80vh;
+        z-index: 2001;
+        background-color: transparent;
+        pointer-events: auto;
+        overflow: visible;
+        animation: fadeScaleIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    }
+
+    .mobile-focus-wrapper.closing {
+        animation: fadeScaleOut 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+        pointer-events: none;
+    }
+
+    @keyframes fadeScaleIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    @keyframes fadeScaleOut {
+        from {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        to {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+    }
+
+    /* Inner card: flex-grow allows it to fill wrapper, valid height ensures scroll */
+    .menu-card.mobile-focus-inner {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        /* Allow it to be determined by content or flex */
+        min-height: 0;
+        flex: 1 1 auto;
+        /* Grow/shrink */
+        margin: 0 !important;
+        transform: none !important;
+        overflow: hidden !important;
+        pointer-events: auto !important;
+        border-radius: 5px;
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .menu-card.mobile-focus-inner .card-content {
+        overflow-y: auto !important;
+        flex: 1 1 auto;
+        /* Fill remaining space */
+        min-height: 0;
+        /* Crucial for nested flex scroll */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure we can click cards to trigger this */
+    /* Ensure we can click cards to trigger this */
+    .menu-card {
+        pointer-events: auto !important;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Close Button Style */
+    .mobile-menu-close-btn {
+        position: absolute;
+        top: -5px;
+        right: 0px;
+        width: 40px;
+        height: 40px;
+        background-color: #3e2723;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        z-index: 2005;
+        cursor: pointer;
+        outline: none;
+        box-shadow: none;
+        /* Removed shadow/grey glow */
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
