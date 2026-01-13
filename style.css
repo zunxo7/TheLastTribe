@@ -106,27 +106,26 @@ body {
 
 #bg-video {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    width: 102vw;
+    height: 102vh;
     object-fit: cover;
     object-position: center;
-    /* Remove old transforms that might interfere */
-    transform: none;
+    transform: translate(-50%, -50%);
 }
 
 /* Mobile video optimization */
 @media screen and (max-width: 768px) {
     #bg-video {
-        width: 100vw;
-        height: 100lvh;
+        width: 102vw;
+        height: 102lvh;
         /* Prevent resizing when address bar toggles */
         object-fit: cover;
         object-position: center;
         /* Ensure no min-width constraints break the aspect ratio fill */
-        min-width: 100%;
-        min-height: 100%;
+        min-width: 102%;
+        min-height: 102%;
     }
 }
 
