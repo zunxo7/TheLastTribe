@@ -183,16 +183,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextBtn = document.getElementById('next-btn');
 
         let isAnimating = false;
-        const cardWidth = 400; // Match CSS width
-        const gap = 50;        // Match CSS gap
-        const moveAmount = cardWidth + gap;
+
+        // --- Dynamic Dimension Calculation ---
+        function updateCarouselDimensions() {
+            // Logic: 3 cards visible. 
+            // Center card (spotlight) + 2 side cards. 
+            // Center is usually scale(1.15), keeping sides smaller.
+            // Constraint: Container = 3 * width + 2 * gap.
+            // Let's use 25vw for width and 2.5vw for gap.
+            // Total visible width = 25*3 + 2.5*2 = 75 + 5 = 80vw.
+            // This leaves 10vw margins on each side.
+
+            const viewportWidth = window.innerWidth;
+            const widthVal = viewportWidth * 0.25;
+            const gapVal = viewportWidth * 0.025;
+
+            // Update CSS Variables root-wide or on the container
+            document.documentElement.style.setProperty('--card-width', `${widthVal}px`);
+            document.documentElement.style.setProperty('--card-gap', `${gapVal}px`);
+        }
+
+        // Run on load and resize
+        updateCarouselDimensions();
+        window.addEventListener('resize', () => {
+            updateCarouselDimensions();
+            // Re-spotlight to ensure center is correct after resize might have shifted things
+            updateSpotlight(1);
+        });
+
+        // Helper to get current dynamic movement amount
+        function getMoveAmount() {
+            const width = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-width'));
+            const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-gap'));
+            return width + gap;
+        }
 
         // Helper to update spotlight class
         function updateSpotlight(targetIndex = 1) {
             const cards = Array.from(menuTrack.children);
             cards.forEach((card, index) => {
                 // In a 3-card view, index 1 is the middle one
-                // Adjust if using more visible cards, but 1 is safe for [Left, Center, Right]
                 if (index === targetIndex) {
                     card.classList.add('spotlight');
                 } else {
@@ -213,8 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isAnimating) return;
                 isAnimating = true;
 
+                const moveAmount = getMoveAmount();
+
                 // 1. Immediate Spotlight: Light up the card that WILL be in the middle (Index 2)
-                // Current: [0, 1, 2] -> Next View: [1, 2, 3] -> Center is 2
                 updateSpotlight(2);
 
                 // 2. Animate track to the left
@@ -228,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     menuTrack.style.transform = 'translateX(0)';
 
                     // Now that we rotated, the spotlighted card (was index 2) is now index 1.
-                    // We re-affirm index 1 just to be safe and consistent.
                     updateSpotlight(1);
 
                     isAnimating = false;
@@ -241,6 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
             prevBtn.addEventListener('click', () => {
                 if (isAnimating) return;
                 isAnimating = true;
+
+                const moveAmount = getMoveAmount();
 
                 // 1. Instantly move last card to front
                 menuTrack.style.transition = 'none';
@@ -261,7 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 5. Cleanup
                 setTimeout(() => {
-                    // Spotlight is already correct, but good to ensure state
                     updateSpotlight(1);
                     isAnimating = false;
                 }, 400);
@@ -615,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
     handleScroll();
 
     // Smooth Scroll for Nav Links
-    const navLinksMain = document.querySelectorAll('.nav-link');
+    const navLinksMain = document.querySelectorAll('.nav-link, .view-gallery-btn');
     navLinksMain.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();

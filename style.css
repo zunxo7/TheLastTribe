@@ -29,6 +29,9 @@ html {
     /* Remove tap highlight on mobile */
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
+    /* Background color moved to .video-container to allow video visibility */
+    background-color: transparent;
+    /* Fix white flashes */
 }
 
 body {
@@ -92,9 +95,13 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    /* Use lvh for mobile browsers to prevent resizing issues when address bar hides */
+    height: 100vh;
+    height: 100lvh;
     z-index: -1;
     overflow: hidden;
+    background-color: #1e140f;
+    /* Fallback color */
 }
 
 #bg-video {
@@ -286,9 +293,10 @@ body {
 
 .hero-tagline {
     color: #fff;
-    font-size: 8rem;
+    font-size: clamp(3rem, 7vw, 8rem);
+    line-height: 0.9;
     font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 12px;
+    letter-spacing: clamp(4px, 1vw, 12px);
     text-transform: uppercase;
     text-shadow:
         0 4px 8px rgba(0, 0, 0, 0.9),
@@ -348,9 +356,9 @@ body {
 
 .hero-description {
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
     font-family: 'Montserrat', sans-serif;
-    letter-spacing: 4px;
+    letter-spacing: clamp(1px, 0.5vw, 4px);
     text-transform: uppercase;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
     margin: 0;
@@ -802,20 +810,26 @@ body {
 
 .menu-scroll-container>div:first-of-type {
     overflow: hidden;
-    width: calc(400px * 3 + 50px * 2);
-    /* Add padding to prevent clipping of scaled-up cards */
+    width: calc(var(--card-width) * 3 + var(--card-gap) * 2);
+    /* Exact 3-card width */
+    max-width: 100vw;
     padding: 100px 0;
     display: flex;
+    justify-content: flex-start;
+    /* FIX: Align track to start so index 0 is first */
     align-items: center;
     min-height: 0;
 }
 
 .menu-track {
     display: flex;
-    gap: 50px;
+    gap: var(--card-gap);
     padding: 0;
     transition: transform 0.5s ease;
     align-items: center;
+    width: fit-content;
+    /* Allow track to be as long as needed */
+    justify-content: flex-start;
 }
 
 /* Navigation Buttons */
@@ -1050,11 +1064,16 @@ body {
 }
 
 .menu-card {
-    flex: 0 0 400px;
+    flex: 0 0 var(--card-width);
+    /* Strict width */
+    max-width: none;
+    /* Let variable control it */
+    min-width: 0;
     /* Background moved to ::before to allow specific filtering */
     border-radius: 5px;
     position: relative;
-    padding: 60px 50px;
+    padding: 60px 40px;
+    /* Base padding safe for mobile fallback or overridden by mobile query if specificity holds */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1107,8 +1126,56 @@ body {
 /* Desktop only - fixed height */
 @media screen and (min-width: 769px) {
     .menu-card {
+        padding: clamp(30px, 4vw, 60px) clamp(20px, 3vw, 50px);
         height: 70vh;
         max-height: 600px;
+    }
+
+    .card-header h3 {
+        font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .menu-header-row {
+        grid-template-columns: 1fr minmax(40px, auto) minmax(40px, auto);
+    }
+
+    .menu-item {
+        grid-template-columns: 1fr minmax(40px, auto) minmax(40px, auto);
+    }
+
+
+    /* --- Laptop (1024px) Specific Fix --- */
+    @media screen and (max-width: 1100px) {
+        .menu-card {
+            flex: 0 0 25vw !important;
+            /* Force wider */
+            width: 25vw !important;
+            padding: 15px 20px !important;
+            /* Tight padding */
+            height: 55vh;
+            /* Reduced height (was 75vh) */
+            max-height: none;
+        }
+
+        .card-header h3 {
+            font-size: 1.8rem !important;
+            /* Smaller title */
+            margin-bottom: 8px;
+        }
+
+        .menu-header-row,
+        .menu-item {
+            gap: 2px !important;
+            /* Tighter gap */
+            grid-template-columns: 1fr 35px 35px !important;
+            /* Force tight columns */
+        }
+
+        .menu-item span,
+        .menu-header-row span {
+            font-size: 0.95rem;
+            /* Smaller text */
+        }
     }
 
     .nav-button {
@@ -1173,7 +1240,7 @@ body {
 
 .card-content {
     flex: 1;
-    padding-right: 28px;
+    padding-right: 15px;
     overflow-y: auto;
     overflow-x: hidden;
     /* Use a serif font for that old-world feel */
@@ -1194,6 +1261,7 @@ body {
 .menu-header-row {
     display: grid;
     grid-template-columns: 1fr 70px 70px;
+    gap: 5px;
     /* Name | Half | Full */
     margin-bottom: 10px;
     padding-bottom: 5px;
@@ -1392,12 +1460,25 @@ body {
     }
 }
 
+/* --- Tablet Specific Adjustment (User Request) --- */
+@media screen and (min-width: 600px) and (max-width: 768px) {
+    .menu-card {
+        width: 80vw !important;
+        /* 20% narrower than full width */
+        max-width: 550px;
+        /* Ensure it doesn't get too wide but allows 80vw to work */
+        margin: 0 auto;
+        /* Enhance centering */
+    }
+}
+
 .menu-item {
     display: grid;
     grid-template-columns: 1fr 70px 70px;
     /* Name | Half | Full */
     align-items: center;
     margin-bottom: 12px;
+    gap: 5px;
     border-bottom: 1px dashed rgba(62, 39, 35, 0.2);
     padding-bottom: 4px;
     gap: 5px;
@@ -1423,7 +1504,8 @@ body {
     text-align: left;
     white-space: normal;
     /* Allow text wrapping for long names */
-    line-height: 1.2;
+    line-height: 1.1;
+    overflow-wrap: break-word;
 }
 
 .menu-item .price {
